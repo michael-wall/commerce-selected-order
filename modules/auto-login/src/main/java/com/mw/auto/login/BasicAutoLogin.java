@@ -63,22 +63,30 @@ public class BasicAutoLogin extends BaseAutoLogin {
 		credentials[1] = user.getPassword();
 		credentials[2] = Boolean.TRUE.toString();
 		
-		long groupId = 44904; // Hardcoded temporarially...
-		String currencyCode = "USD";// Hardcoded temporarially...
+		// Commerce specific customization starts here...
+		
+		long groupId = 44904; // Hardcoded temporarily...
+		String currencyCode = "USD";// Hardcoded temporarily...
 		
 		_log.info(CommerceOrder.class.getName() + StringPool.POUND + groupId);
 		
+		// Fetch Curreny for CurrencyCode USD
 		CommerceCurrency commerceCurrency = _commerceCurrencyLocalService.fetchCommerceCurrency(companyId, currencyCode);
 
+		// Fetch the current Account Entry for the current user in the Commerce Enabled Site.
 		AccountEntry currentAccountEntry = _currentAccountEntryManager.getCurrentAccountEntry(groupId, user.getUserId());
 		
+		// Create the Commerce Order
 		CommerceOrder commerceOrder = _commerceOrderLocalService.addCommerceOrder(user.getUserId(), groupId, currentAccountEntry.getAccountEntryId(), commerceCurrency.getCode(), 0);
 		
 		_log.info("Created Order: UUID: " + commerceOrder.getUuid() + ", orderId: " + commerceOrder.getCommerceOrderId() + ", currencyCode: " + commerceCurrency.getCode());
 		
 		HttpSession httpSession = httpServletRequest.getSession();
 
+		// Set the Session Attribute
 		httpSession.setAttribute(_commerceOrderHttpHelper.getCookieName(commerceOrder.getGroupId()), commerceOrder.getUuid());
+		
+		// Commerce specific customization ends here...
 		
 		return credentials;
 	}	
