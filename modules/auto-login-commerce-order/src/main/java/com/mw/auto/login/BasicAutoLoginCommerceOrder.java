@@ -48,7 +48,7 @@ public class BasicAutoLoginCommerceOrder extends BaseAutoLogin {
 		
 		_log.info("enabled: " + _customCommerceOrderConfiguration.enabled());
 		
-		_log.info("groupId: " + _customCommerceOrderConfiguration.groupId());
+		_log.info("commerceChannelGroupId: " + _customCommerceOrderConfiguration.commerceChannelGroupId());
 		
 		_log.info("currencyCode: " + _customCommerceOrderConfiguration.currencyCode());
 		
@@ -81,8 +81,8 @@ public class BasicAutoLoginCommerceOrder extends BaseAutoLogin {
 		
 		if (!_customCommerceOrderConfiguration.enabled()) return credentials;
 		
-		if (Validator.isNull(_customCommerceOrderConfiguration.groupId())) {
-			_log.info("GroupId is empty.");
+		if (Validator.isNull(_customCommerceOrderConfiguration.commerceChannelGroupId())) {
+			_log.info("commerceChannelGroupId is empty.");
 			
 			return credentials;
 		}
@@ -97,13 +97,13 @@ public class BasicAutoLoginCommerceOrder extends BaseAutoLogin {
 		AccountEntry currentAccountEntry = null;
 		
 		try {
-			currentAccountEntry = _currentAccountEntryManager.getCurrentAccountEntry(_customCommerceOrderConfiguration.groupId(), user.getUserId());
+			currentAccountEntry = _currentAccountEntryManager.getCurrentAccountEntry(_customCommerceOrderConfiguration.commerceChannelGroupId(), user.getUserId());
 		} catch (PortalException e) {
-			_log.error("Error retrieving currentAccountEntry for groupId: " + _customCommerceOrderConfiguration.groupId() + ", userId: " + user.getUserId(), e);
+			_log.error("Error retrieving currentAccountEntry for commerceChannelGroupId: " + _customCommerceOrderConfiguration.commerceChannelGroupId() + ", userId: " + user.getUserId(), e);
 		}			
 		
 		if (currentAccountEntry == null) {
-			_log.info("Unable to find curentAccountEntry for groupId: " + _customCommerceOrderConfiguration.groupId() + ", userId: " + user.getUserId());
+			_log.info("Unable to find curentAccountEntry for commerceChannelGroupId: " + _customCommerceOrderConfiguration.commerceChannelGroupId() + ", userId: " + user.getUserId());
 			
 			return credentials;			
 		}		
@@ -120,9 +120,9 @@ public class BasicAutoLoginCommerceOrder extends BaseAutoLogin {
 		// Create the Commerce Order
 		CommerceOrder commerceOrder = null;
 		try {
-			commerceOrder = _commerceOrderLocalService.addCommerceOrder(user.getUserId(), _customCommerceOrderConfiguration.groupId(), currentAccountEntry.getAccountEntryId(), commerceCurrency.getCode(), 0);
+			commerceOrder = _commerceOrderLocalService.addCommerceOrder(user.getUserId(), _customCommerceOrderConfiguration.commerceChannelGroupId(), currentAccountEntry.getAccountEntryId(), commerceCurrency.getCode(), 0);
 		} catch (PortalException e) {
-			_log.error("Error creating order for groupId: " + _customCommerceOrderConfiguration.groupId() + ", accountEntryId: " + currentAccountEntry.getAccountEntryId() + ", userId: " + user.getUserId() + ", currencyCode: " + commerceCurrency.getCode(), e);
+			_log.error("Error creating order for commerceChannelGroupId: " + _customCommerceOrderConfiguration.commerceChannelGroupId() + ", accountEntryId: " + currentAccountEntry.getAccountEntryId() + ", userId: " + user.getUserId() + ", currencyCode: " + commerceCurrency.getCode(), e);
 		}
 		
 		if (commerceOrder != null) {

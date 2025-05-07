@@ -58,7 +58,7 @@ public class CustomOpenIdConnectAutoLoginFilter extends AutoLoginFilter {
 		
 		_log.info("enabled: " + _customCommerceOrderConfiguration.enabled());
 		
-		_log.info("groupId: " + _customCommerceOrderConfiguration.groupId());
+		_log.info("commerceChannelGroupId: " + _customCommerceOrderConfiguration.commerceChannelGroupId());
 		
 		_log.info("currencyCode: " + _customCommerceOrderConfiguration.currencyCode());
 		
@@ -161,8 +161,8 @@ public class CustomOpenIdConnectAutoLoginFilter extends AutoLoginFilter {
 					
 					if (!_customCommerceOrderConfiguration.enabled()) return;
 				
-					if (Validator.isNull(_customCommerceOrderConfiguration.groupId())) {
-						_log.info("GroupId is empty.");
+					if (Validator.isNull(_customCommerceOrderConfiguration.commerceChannelGroupId())) {
+						_log.info("commerceChannelGroupId is empty.");
 						
 						return;
 					}
@@ -177,13 +177,13 @@ public class CustomOpenIdConnectAutoLoginFilter extends AutoLoginFilter {
 					AccountEntry currentAccountEntry = null;
 					
 					try {
-						currentAccountEntry = _currentAccountEntryManager.getCurrentAccountEntry(_customCommerceOrderConfiguration.groupId(), userId);
+						currentAccountEntry = _currentAccountEntryManager.getCurrentAccountEntry(_customCommerceOrderConfiguration.commerceChannelGroupId(), userId);
 					} catch (PortalException e) {
-						_log.error("Error retrieving currentAccountEntry for groupId: " + _customCommerceOrderConfiguration.groupId() + ", userId: " + userId, e);
+						_log.error("Error retrieving currentAccountEntry for groupId: " + _customCommerceOrderConfiguration.commerceChannelGroupId() + ", userId: " + userId, e);
 					}	
 					
 					if (currentAccountEntry == null) {
-						_log.info("Unable to find curentAccountEntry for groupId: " + _customCommerceOrderConfiguration.groupId() + ", userId: " + userId);
+						_log.info("Unable to find curentAccountEntry for groupId: " + _customCommerceOrderConfiguration.commerceChannelGroupId() + ", userId: " + userId);
 						
 						return;			
 					}						
@@ -198,17 +198,17 @@ public class CustomOpenIdConnectAutoLoginFilter extends AutoLoginFilter {
 					}
 					
 					// Find an open order created by this user for this Account
-					CommerceOrder commerceOrder = _commerceOrderLocalService.fetchCommerceOrder(currentAccountEntry.getAccountEntryId(), _customCommerceOrderConfiguration.groupId(), userId, 2);
+					CommerceOrder commerceOrder = _commerceOrderLocalService.fetchCommerceOrder(currentAccountEntry.getAccountEntryId(), _customCommerceOrderConfiguration.commerceChannelGroupId(), userId, 2);
 					
 					if (commerceOrder == null) { // Create the order
 						_log.info("Existing open commerce order not found for accountEntryId: " + currentAccountEntry.getAccountEntryId() + ", userId: " + userId);
 						
 						try {
-							commerceOrder = _commerceOrderLocalService.addCommerceOrder(userId, _customCommerceOrderConfiguration.groupId(), currentAccountEntry.getAccountEntryId(), commerceCurrency.getCode(), 0);
+							commerceOrder = _commerceOrderLocalService.addCommerceOrder(userId, _customCommerceOrderConfiguration.commerceChannelGroupId(), currentAccountEntry.getAccountEntryId(), commerceCurrency.getCode(), 0);
 							
 							_log.info("Created Commerce Order: UUID: " + commerceOrder.getUuid() + ", orderId: " + commerceOrder.getCommerceOrderId() + ", currencyCode: " + commerceCurrency.getCode());
 						} catch (PortalException e) {
-							_log.error("Error creating order for groupId: " + _customCommerceOrderConfiguration.groupId() + ", accountEntryId: " + currentAccountEntry.getAccountEntryId() + ", userId: " + userId + ", currencyCode: " + commerceCurrency.getCode(), e);
+							_log.error("Error creating order for groupId: " + _customCommerceOrderConfiguration.commerceChannelGroupId() + ", accountEntryId: " + currentAccountEntry.getAccountEntryId() + ", userId: " + userId + ", currencyCode: " + commerceCurrency.getCode(), e);
 						}						
 					} else {
 						_log.info("Existing open commerce order (commerceOrderId: " + commerceOrder.getCommerceOrderId() + " found for accountEntryId: " + currentAccountEntry.getAccountEntryId() + ", userId: " + userId);
