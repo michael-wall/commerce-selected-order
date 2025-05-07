@@ -19,9 +19,9 @@ This project consists of 4 custom OSGi modules:
 - The session.phishing.protected.attributes portal property must be updated to include com.liferay.commerce.model.CommerceOrder#44904 (where 44904 is the commerceChannelGroupId from above) to allow the session attribute that is set in the BasicAutoLoginCommerceOrder.java class to be passed to the new session created after the user is logged in.
 
 ## BasicAutoLoginCommerceOrder.java ##
-- Invoke with syntax http://localhost:8080/?emailAddress=test@liferay.com
+- Invoke with syntax http://localhost:8080/?emailAddress=test@liferay.com or http://localhost:8080/web/minium/catalog/?emailAddress=test@liferay.com etc.
 
-## Test Scenario for BasicAutoLoginCommerceOrder.java ##
+## Sample test Scenario for BasicAutoLoginCommerceOrder.java ##
 1. Auto Login as test@liferay.com in Browser A, note the new commerce order ID in the logging but don't visit the Commerce Site.
 2. Auto Login as the same user in Browser B, note the new commerce order ID in the logging and visit the Commerce Site.
 3. In Browser B confirm the correct commerce order ID from step 2 is applied.
