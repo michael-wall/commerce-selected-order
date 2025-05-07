@@ -1,0 +1,3 @@
+Bundle-Name: custom-oidc-commerce-order
+Bundle-SymbolicName: custom.oidc.commerce.order
+Bundle-Version: 1.0.0

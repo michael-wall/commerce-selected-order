@@ -1,0 +1,4 @@
+Bundle-Name: custom-commerce-order-config
+Bundle-SymbolicName: custom.commerce.order.config
+Bundle-Version: 1.0.0
+Export-Package: com.mw.commerce.order.config
