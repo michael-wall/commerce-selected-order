@@ -1,6 +1,6 @@
 ## Introduction ##
 This project consists of 4 custom OSGi modules: 
-- commerce-order-config: Configuration to enable the custom logic and store the Commerce enabled groupId and the default currencyCode used when creating the Commerce Order.
+- commerce-order-config: Configuration to enable the custom logic and store the commerceChannelGroupId and the default currencyCode used when creating the Commerce Order.
 - auto-login-commerce-order: Contains a sample AutoLogin OSGi component that creates a Commerce Order and populates the Session Attribute so the Commerce Order is pre-selected in the GUI.
 - oidc-fragment: An OSGi fragment module to expose 2 internal Liferay packages from the com.liferay.portal.security.sso.openid.connect.impl module that are referenced in oidc-commerce-order module.
 - oidc-commerce-order: An OSGI component that overrides the OpenIdConnectAutoLoginFilter Liferay class with a custom implementation. This checks for an existing open Commerce Order for the current user and if not found it creates one. In both cases it populates the Session Attribute so the Commerce Order is pre-selected in the GUI.
@@ -28,4 +28,4 @@ This project consists of 4 custom OSGi modules:
 4. In Browser A visit the Commerce Site and confirm the correct commerce order ID from step 1 is applied.
 
 ## Notes ##
-- The currencyCode is stored in configuration and I tested locally with USD as it was the default.
+- The currencyCode is stored in configuration as it is needed when creating a new Commerce Order and I tested locally with USD as it was the default. Additional logic may be required to determine the correct currency dynamically to avoid storing it as a Configuration setting.
