@@ -12,7 +12,7 @@ This project consists of 4 custom OSGi modules:
 - Ensure the Liferay source code for this file is checked for updates when the custom modules are updated to a newer QR version.s
 
 ## Configuration ##
-- Go to System Settings > Commerce > Custom Commerce Order. Check the 'Enabled' checkbox, populate 'Commerce Channel Group ID' with the commerceChannelGroupId from the Commerce enabled Site and populate the Currency Code to use e.g. USD.
+- Go to System Settings > Commerce > Custom Commerce Order. Check the 'Enabled' checkbox, populate 'Commerce Channel Group ID' with the commerceChannelGroupId from the Commerce enabled Site (e.g. visit the Site in browser, view Source Code and search for commerceChannelGroupId) and populate the Currency Code to use e.g. USD.
 - Go to System Settings > Platform > Module Container > Component Blacklist and add the following to the list of Blacklisted Components: com.liferay.portal.security.sso.openid.connect.internal.servlet.filter.auto.login.OpenIdConnectAutoLoginFilter
 - Note: If already using a ComponentBlacklistConfiguration.config file in the Liferay PaaS repository then update that file instead of configuring through the GUI.
 - If the custom modules are removed ensure that the OpenIdConnectAutoLoginFilter class is un-blacklisted, otherwise OIDC SSO users will not be able to login.
@@ -26,3 +26,6 @@ This project consists of 4 custom OSGi modules:
 2. Auto Login as the same user in Browser B, note the new commerce order ID in the logging and visit the Commerce Site.
 3. In Browser B confirm the correct commerce order ID from step 2 is applied.
 4. In Browser A visit the Commerce Site and confirm the correct commerce order ID from step 1 is applied.
+
+## Notes ##
+- The currencyCode is stored in configuration and I tested locally with USD as it was the default.
