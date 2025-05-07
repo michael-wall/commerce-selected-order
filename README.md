@@ -15,11 +15,10 @@ This project consists of 4 modules:
 - Go to System Settings > Platform > Module Container > Component Blacklist and add the following to the list of Blacklisted Components: com.liferay.portal.security.sso.openid.connect.internal.servlet.filter.auto.login.OpenIdConnectAutoLoginFilter
 - Note: If already using a ComponentBlacklistConfiguration.config file in the Liferay PaaS repository then update that file instead of configuring through the GUI.
 - If the custom modules are removed ensure that the OpenIdConnectAutoLoginFilter class is un-blacklisted, otherwise OIDC SSO users will not be able to login.
+- The session.phishing.protected.attributes portal property must be updated to include com.liferay.commerce.model.CommerceOrder#44904 (where 44904 is the Commerce enabled Site groupId) to allow the session attribute that is set in the BasicAutoLoginCommerceOrder.java class to be passed to the new session created after the user is logged in.
 
 ## BasicAutoLoginCommerceOrder.java ##
 - Invoke with syntax http://localhost:8080/?emailAddress=test@liferay.com
-- Note the groupId for the Commerce enabled Site and the currency Code are temporarily hardcoded in BasicAutoLogin.java.
-- Note that the the session.phishing.protected.attributes portal property must be updated to include com.liferay.commerce.model.CommerceOrder#44904 (where 44904 is the Commerce enabled Site groupId) to allow the session attribute that is set in the BasicAutoLogin class to be passed to the new session created after the user is logged in.
 
 ## Test Scenario for BasicAutoLoginCommerceOrder.java ##
 1. Auto Login as test@liferay.com in Browser A, note the new commerce order ID in the logging but don't visit the Commerce Site.
