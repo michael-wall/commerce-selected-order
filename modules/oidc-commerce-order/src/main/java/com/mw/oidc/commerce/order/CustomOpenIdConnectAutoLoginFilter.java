@@ -8,6 +8,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.log.Log;
@@ -25,6 +26,7 @@ import com.liferay.portal.security.sso.openid.connect.internal.session.manager.O
 import com.liferay.portal.servlet.filters.autologin.AutoLoginFilter;
 import com.mw.commerce.order.config.CustomCommerceOrderConfiguration;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -198,7 +200,8 @@ public class CustomOpenIdConnectAutoLoginFilter extends AutoLoginFilter {
 					}
 					
 					// Find an open order created by this user for this Account
-					CommerceOrder commerceOrder = _commerceOrderLocalService.fetchCommerceOrder(currentAccountEntry.getAccountEntryId(), _customCommerceOrderConfiguration.commerceChannelGroupId(), userId, 2);
+					//CommerceOrder commerceOrder = _commerceOrderLocalService.fetchCommerceOrder(currentAccountEntry.getAccountEntryId(), _customCommerceOrderConfiguration.commerceChannelGroupId(), userId, 2);
+					CommerceOrder commerceOrder = getOpenCommerceOrderByUserId(userId, currentAccountEntry.getCompanyId(), _customCommerceOrderConfiguration.commerceChannelGroupId(), currentAccountEntry.getAccountEntryId());
 					
 					if (commerceOrder == null) { // Create the order
 						_log.info("Existing open commerce order not found for accountEntryId: " + currentAccountEntry.getAccountEntryId() + ", userId: " + userId);
@@ -232,6 +235,39 @@ public class CustomOpenIdConnectAutoLoginFilter extends AutoLoginFilter {
 					"Expected user " + userId + " to be authenticated");
 			});
 	}
+	
+	/**
+	 * @param userId
+	 * @param companyId
+	 * @param commerceChannelGroupId
+	 * @param commerceAccountId
+	 * @return
+	 * 
+	 * Get an open order based on the provided userId
+	 */
+	private CommerceOrder getOpenCommerceOrderByUserId(long userId, long companyId, long commerceChannelGroupId, long commerceAccountId) {
+		long[] commerceAccountIds = {commerceAccountId};
+		int[] orderStatuses= {2}; // Open orders only
+		
+		try {
+			long start = System.currentTimeMillis();
+			
+			List<CommerceOrder> orders = _commerceOrderLocalService.getCommerceOrders(companyId, commerceChannelGroupId, commerceAccountIds, null, orderStatuses, false, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			
+			_log.info(System.currentTimeMillis() - start + " ms.");
+			
+			for (CommerceOrder order: orders) {
+				if (order.getUserId() == userId) {
+					return order;
+				}
+			}
+		} catch (PortalException e) {
+			_log.error("Error getting orders", e);
+		}
+		
+		
+		return null;
+	}	
 
 	private long _getRemoteUserId(ServletRequest servletRequest) {
 		HttpServletRequest httpServletRequest =
